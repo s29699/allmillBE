@@ -65,13 +65,14 @@ const createPost = async (req, res) => {
 
 
 const allPost = async (req, res) => {
+    // console.log("all post called")
     const allposts = await Post.find({});
     if(!allposts){
         return res.status(501).send({
             message:"error in fetching all posts",
         })
     }
-    console.log("allposts: ", allposts);
+    // console.log("allposts: ", allposts);
     
     return res.status(200).send({
         message:"All osts fetched",

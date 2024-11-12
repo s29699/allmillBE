@@ -2,15 +2,16 @@
 import express from "express";
 import userRouter from "./routes/user.routes.js";
 import { postRouter } from "./routes/post.routes.js";
-// import cors from "cors";
+import cors from "cors";
 
 const app = express();
 
+// app.use(cors())
 
-// app.use(cors({
-//     origin:process.env.CORS_ORIGIN,
-//     credentials: true
-// }))
+app.use(cors({
+    origin:process.env.CORS_ORIGIN,
+    credentials: true
+}))
 
 //so that express can handle json data. previously body-parser was used for this but express can do it on its own
 app.use(express.json())
