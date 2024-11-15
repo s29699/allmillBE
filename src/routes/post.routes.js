@@ -4,7 +4,7 @@ import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const postRouter = Router();
 
-postRouter.route("/create").get(verifyToken, createPost);
+postRouter.route("/create").post(verifyToken, createPost);
 
 postRouter.route("/allpost").get(allPost);
 

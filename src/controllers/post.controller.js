@@ -11,10 +11,14 @@ const generateHash = (description) => {
 const createPost = async (req, res) => {
     const {title, description} = req.body;
     console.log("req.url: ", req.url);
+    console.log("title & description", title, description );
+    
+    console.log("tyeof(description): ",typeof(description));
+    
 
     const username = req.username;
 
-    console.log("username : ", username);
+    console.log("username: ", username);
     
     const hashedDescription = generateHash(description);
 

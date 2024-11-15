@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 const registerUser = async (req, res) => {
     const {username, email, fullName, password} = req.body ;
     console.log("req.body", req.body);
+    console.log("type of username: ",typeof(username))
 
     const tf = (ele) => (ele.trim === "")
 
@@ -28,7 +29,6 @@ const registerUser = async (req, res) => {
         email,
         username,
         password:hashedPassword,
-        lastUpd
     })
 
     const createdUser = await User.findById(user._id).select("-password -refreshToken")
