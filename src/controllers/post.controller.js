@@ -67,7 +67,6 @@ const createPost = async (req, res) => {
     
 }
 
-
 const allPost = async (req, res) => {
     // console.log("all post called")
     const allposts = await Post.find({});
@@ -85,8 +84,10 @@ const allPost = async (req, res) => {
 }
 
 const displayPost = async (req, res) => {
-    const alias = req.url.split('/');
-    const slug = alias[alias.length - 1];
+    // const alias = req.url.split('/');
+    // const slug = alias[alias.length - 1];
+    const {slug} = req.params;
+    console.log("slug in display: ",slug);
 
     const post = await Post.findOne({slug:slug});
 
@@ -127,4 +128,23 @@ const updatePost = async (req, res) => {
     })
 }
 
-export { createPost, allPost, displayPost, deletePost, updatePost }
+const searchPost = async (req, res) => {
+    const { searchInput } = req.body;
+    console.log(typeof(searchInput), searchInput);
+    
+    const post = await Post.findOne({title:searchInput});
+    console.log("post in searchInput: ", post);
+
+    if(!post){
+        return res.status(304).send({
+            message:"No post with such title"
+        })
+    }
+
+    return res.status(201).send({
+        message:"Post found",
+        post
+    })
+}
+
+export { createPost, allPost, displayPost, deletePost, updatePost, searchPost }

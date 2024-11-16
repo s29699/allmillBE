@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allPost, createPost, deletePost, displayPost, updatePost } from "../controllers/post.controller.js";
+import { allPost, createPost, deletePost, displayPost, searchPost, updatePost } from "../controllers/post.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const postRouter = Router();
@@ -14,5 +14,6 @@ postRouter.route("/delete/:slug").post(deletePost);
 
 postRouter.route("/update/:slug").post(updatePost);
 
+postRouter.route("/search").post(searchPost);
 
 export { postRouter };
