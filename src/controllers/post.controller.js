@@ -68,8 +68,10 @@ const createPost = async (req, res) => {
 }
 
 const allPost = async (req, res) => {
-    // console.log("all post called")
-    const allposts = await Post.find({});
+    console.log("all post called")
+    const {pageno} = req.params;
+    const pn = parseInt(pageno);
+    const allposts = await Post.find({}).limit(pn*9).skip((pn-1)*9);
     if(!allposts){
         return res.status(501).send({
             message:"error in fetching all posts",

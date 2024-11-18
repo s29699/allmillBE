@@ -6,7 +6,7 @@ const postRouter = Router();
 
 postRouter.route("/create").post(verifyToken, createPost);
 
-postRouter.route("/allpost").get(allPost);
+postRouter.route("/allpost/:pageno").get(allPost);
 
 postRouter.route("/display/:slug").get(displayPost);
 
