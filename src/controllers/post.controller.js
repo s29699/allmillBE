@@ -100,9 +100,10 @@ const displayPost = async (req, res) => {
 }
 
 const deletePost = async (req, res) => {
-    const url = req.url.split('/');
-    const slug = url[url.length -1];
-    console.log("slug: ",slug);
+    // const url = req.url.split('/');
+    // const slug = url[url.length -1];
+    const {slug} = req.params;
+    console.log("slug in delete: ",slug);
     const isDeleted = await Post.deleteOne({slug:slug});
     if(!isDeleted) return res.status(501).send({message:"unable to delete"});
 
@@ -110,19 +111,30 @@ const deletePost = async (req, res) => {
 }
 
 const updatePost = async (req, res) => {
-    const url = req.url.split('/');
-    const slug = url[url.length -1];
+    // const url = req.url.split('/');
+    // const slug = url[url.length -1];
+
+    const {slug} = req.params;
+    
+    console.log("slug in update:", slug );
 
     const {title, description} = req.body;
 
-    const post = await Post.findOne({slug});
+    const post = await Post.findOne({slug:slug});
     post.title = title;
     post.description = description;
+    console.log("post in update: ",post);
+    // const newPost = await Post.findByIdAndUpdate(post._id,
+    //     {title:title, description:description},
+    //     {new:true}
+    // )
     const hookResponse = await post.save();
 
     console.log("hookResponse: ", hookResponse);
 
-    const updatedPost = await Post.findById(post._id);
+    const updatedPost = await Post.findById(post._id,{
+        new:true
+    });
 
     return res.status(201).send({
         message:"updated successfully",

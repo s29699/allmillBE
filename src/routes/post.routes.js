@@ -10,9 +10,9 @@ postRouter.route("/allpost/:pageno").get(allPost);
 
 postRouter.route("/display/:slug").get(displayPost);
 
-postRouter.route("/delete/:slug").post(deletePost);
+postRouter.route("/delete/:slug").post(verifyToken, deletePost);
 
-postRouter.route("/update/:slug").post(updatePost);
+postRouter.route("/update/:slug").post(verifyToken, updatePost);
 
 postRouter.route("/search").post(searchPost);
 

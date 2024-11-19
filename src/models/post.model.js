@@ -35,11 +35,11 @@ const postSchema = new Schema({
 
 
 postSchema.pre("save", async function(next) {
-    // console.log("entered save hook");
+    console.log("entered save hook");
     
     if((!this.isModified("title")) && (!this.isModified("hash"))) return next();
-    // console.log("modification test passed");
-
+    console.log("modification test passed");
+    console.log("this.title: ", this.title);
     const slug = slugify(this.title , {lower:true ,strict:true})
     let uniqueSlug = slug;
     let counter = 1;
