@@ -3,6 +3,8 @@ import express from "express";
 import userRouter from "./routes/user.routes.js";
 import { postRouter } from "./routes/post.routes.js";
 import cors from "cors";
+import { discussRouter } from "./routes/discuss.route.js";
+import weaponRouter from "./routes/weapon.routes.js";
 
 const app = express();
 
@@ -25,5 +27,9 @@ app.use(express.json())
 app.use("/api/v1/users", userRouter)
 
 app.use("/api/v1/posts", postRouter)
+
+app.use("/api/v1/discuss", discussRouter)
+
+app.use("/api/v1/weapon", weaponRouter)
 
 export {app} ;

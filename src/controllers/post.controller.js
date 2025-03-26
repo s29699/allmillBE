@@ -1,5 +1,5 @@
-import { Post } from "../models/post.model.js";
-import { User } from "../models/user.model.js";
+import { Post } from "../models/blog/post.model.js";
+import { User } from "../models/blog/user.model.js";
 import crypto from 'crypto';
 
 const generateHash = (description) => {
@@ -80,7 +80,7 @@ const allPost = async (req, res) => {
     // console.log("allposts: ", allposts);
     
     return res.status(200).send({
-        message:"All osts fetched",
+        message:"All posts fetched",
         allposts
     })
 }
@@ -92,10 +92,11 @@ const displayPost = async (req, res) => {
     console.log("slug in display: ",slug);
 
     const post = await Post.findOne({slug:slug});
-
+    const user = await User.findOne({_id:post.author})
     return res.status(201).send({
         message:"your post",
-        post
+        post,
+        user
     })
 }
 

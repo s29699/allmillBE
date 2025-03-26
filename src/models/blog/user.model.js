@@ -25,7 +25,17 @@ const userSchema = new Schema({
     password:{
         type:String,
         required: true,
-    }, 
+    },
+    isAdmin:{
+        type:Boolean,
+        required:true,
+        default:false
+    },
+    isMember:{
+        type:Boolean,
+        required:true,
+        default:false,
+    }
 },
 {
     timestamps: true

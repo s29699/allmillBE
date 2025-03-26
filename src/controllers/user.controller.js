@@ -1,4 +1,4 @@
-import { User } from "../models/user.model.js";
+import { User } from "../models/blog/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import bcrypt from "bcrypt";
@@ -7,8 +7,8 @@ import jwt from "jsonwebtoken";
 
 const registerUser = async (req, res) => {
     const {username, email, fullName, password} = req.body ;
-    console.log("req.body", req.body);
-    console.log("type of username: ",typeof(username))
+    // console.log("req.body", req.body);
+    // console.log("type of username: ",typeof(username))
 
     const tf = (ele) => (ele.trim === "")
 
@@ -41,7 +41,6 @@ const registerUser = async (req, res) => {
         new ApiResponse(200, createdUser, "user registered")
     )
 };
-
 
 const loginUser = async (req, res) => {
     const {username, password} = req.body;
