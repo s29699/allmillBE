@@ -60,7 +60,7 @@ const registerReply = async (req, res) => {
     console.log("enter register reply");
     
     const {uid} = req.params;
-    console.log("uid: ", uid);
+    // console.log("uid: ", uid);
     const parent = await Topic.findOne({uuid:uid}); 
     
     const {post} = req.body;
@@ -104,7 +104,7 @@ const registerReply = async (req, res) => {
 
 const allPost = async (req,res) => {
     console.log("aaya");
-    const posts = await Topic.find({})
+    const posts = await Topic.find({}).populate('writer')
     // console.log("posts: ",posts);
     return res.status(201).send({
         message:"All posts",

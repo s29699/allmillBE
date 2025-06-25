@@ -23,6 +23,8 @@ const topicSchema = new Schema({
         ref:"Topic",
         default: null
     }
+},{
+    timestamps:true
 })
 
 export const Topic = mongoose.model("Topic", topicSchema);
