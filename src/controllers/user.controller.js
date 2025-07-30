@@ -22,13 +22,14 @@ const registerUser = async (req, res) => {
 
     if(isUserExisting){throw new ApiError(400, "Some/All credentials are already used")}
     
-    const hashedPassword = await bcrypt.hash(password, 5);
+    //since before saving the user we are hashing the password using pre hook. So need to do it here again.
+    // const hashedPassword = await bcrypt.hash(password, 5);
 
     const user = await User.create({
         fullName,
         email,
         username,
-        password:hashedPassword,
+        password,
     })
 
     const createdUser = await User.findById(user._id).select("-password -refreshToken")
@@ -44,19 +45,33 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     const {username, password} = req.body;
+    console.log("usernaem", username);
+    console.log("password", password);
+    // if([username, password].some((ele) => !ele || ele.trim() === "")){
+    //     console.log("Enter without space!");
+    // }
+    console.log(typeof(username));
+    const trimmedUsername = username.trim();
+const trimmedPassword = password.trim();
     
-    if([username,password].some((ele)=>(ele.trim === ""))){
-        console.log("Enter without space");
-    }
+    console.log(typeof(trimmedUsername));
 
-    const user = await User.findOne({username}) ;
-
-    if(!user){ throw new ApiError(400, "Some/All credentials are already used")}
+    const users = await User.find({username:trimmedUsername}) ;
+    const user = users[0];
+    if(!user){ throw new ApiError(400, "User is not signed up")}
+    console.log("password from DB", user.password);
+    
+    // bcrypt.compare(password, user.password, (err, result) => {
+    //     if(err){
+    //         throw new ApiError(400, "Wrong password")
+    //     }
+    // });
 
     const isMatch = await bcrypt.compare(password, user.password) ;
-
+    console.log("isMa", isMatch);
+    console.log("type isMa", typeof(isMatch));
     if(!isMatch){
-        throw new ApiError(400, "Some/All credentials are already used")
+        throw new ApiError(400, "Wrong password")
     }
 
     const token = jwt.sign(username, process.env.ACCESS_TOKEN_SECRET)

@@ -1,5 +1,6 @@
 import { Post } from "../models/blog/post.model.js";
 import { User } from "../models/blog/user.model.js";
+import { Topic } from "../models/discuss/topic.model.js";
 
 const showProfile = async (req, res) => {
     const {username} = req.params;
@@ -18,18 +19,26 @@ const showProfile = async (req, res) => {
 }
 
 const getUserPost = async (req, res) => {
-    const {username} = req.params();
-    console.log("username in getUserPost", username);
+    const {username} = req.params;
+    console.log("username in getUserPost", req.params);
 
-    const user = await User.findOne({username});
+    const user  = await User.findOne({username});
+    console.log("user", user);
+    // const user = await User.findOne({usrname});
     const post = await Post.find({author:user._id});
 
     console.log("all post by user:", post);
 
     return res.status(201).send({
-        message:`all post by ${user.username}`,
+        message:`all post by ${username}`,
         post
     })
+}
+
+const getUserTweet = async () => {
+    const {username} = req.params;
+
+    const tweet = await Topic.find({})
 }
 
 export {showProfile, getUserPost}

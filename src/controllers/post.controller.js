@@ -14,12 +14,18 @@ const createPost = async (req, res) => {
     console.log("title & description", title, description );
     
     console.log("tyeof(description): ",typeof(description));
-    
 
     const username = req.username;
-
     console.log("username: ", username);
-    
+
+    const user = await User.findOne({username});
+    console.log("user: ",user._id);
+    if(! user.isMember){
+        return res.status(403).send({
+            message: "User ia not member. Post can't be created"
+        })
+    }
+
     const hashedDescription = generateHash(description);
 
     const isCopied = await Post.findOne({hash:hashedDescription});
@@ -31,8 +37,6 @@ const createPost = async (req, res) => {
             message:"There exist a same post"
         })
     }
-    const user = await User.findOne({username});
-    console.log("user: ",user._id);
     
     if(!user){
         return res.status(501).send({
@@ -88,10 +92,22 @@ const allPost = async (req, res) => {
 const displayPost = async (req, res) => {
     // const alias = req.url.split('/');
     // const slug = alias[alias.length - 1];
-    const {slug} = req.params;
+    
+    const {slug} = req.params;  
     console.log("slug in display: ",slug);
-
+    // the below check didn't worked. Don't know why
+    // if(slug == undefined){
+    //     return res.status(401).send({
+    //         message:"Post can't be displayed."
+    //     })
+    // }
     const post = await Post.findOne({slug:slug});
+    // console.log("post", post);
+    if(post == null){
+        return res.status(402).send({
+            message:"Wrong Request"
+        })
+    }
     const user = await User.findOne({_id:post.author})
     return res.status(201).send({
         message:"your post",
@@ -114,7 +130,15 @@ const deletePost = async (req, res) => {
 const updatePost = async (req, res) => {
     // const url = req.url.split('/');
     // const slug = url[url.length -1];
-
+    const username = req.username;
+    const user = await User.findOne({username});
+    
+    // Author is membership expire ho gayi, phir author should be allowed to update the post. hence commented
+    // if(user.isMember){
+    //     return res.status(403).send({
+    //         message:"user is not a memner. Can't modify post"
+    //     })
+    // }
     const {slug} = req.params;
     
     console.log("slug in update:", slug );
@@ -122,6 +146,14 @@ const updatePost = async (req, res) => {
     const {title, description} = req.body;
 
     const post = await Post.findOne({slug:slug});
+    // console.log("post.author", post.author);
+    // console.log("user-id", user._id);
+    //objectId compare ke liye ya to toString se convert karke === karo ya niche wala method
+    if(!post.author.equals(user._id) ){
+        return res.status(401).send({
+            message:"You are not author."
+        })
+    }
     post.title = title;
     post.description = description;
     console.log("post in update: ",post);
