@@ -10,21 +10,25 @@ const generateHash = (description) => {
 
 const createPost = async (req, res) => {
     const {title, description} = req.body;
-    console.log("req.url: ", req.url);
-    console.log("title & description", title, description );
+    // console.log("req.url: ", req.url);
+    // console.log("title & description", title, description );
     
-    console.log("tyeof(description): ",typeof(description));
+    // console.log("tyeof(description): ",typeof(description));
 
-    const username = req.username;
-    console.log("username: ", username);
+    console.log("1 in post");
 
-    const user = await User.findOne({username});
-    console.log("user: ",user._id);
-    if(! user.isMember){
+    const ud = req.username;
+    console.log("username: ", ud);
+
+    const user = await User.findOne({username:ud.username});
+    console.log("user: ",user?._id);
+    if(! user?.isMember){
         return res.status(403).send({
             message: "User ia not member. Post can't be created"
         })
     }
+
+    console.log("2");
 
     const hashedDescription = generateHash(description);
 
@@ -44,6 +48,8 @@ const createPost = async (req, res) => {
         })
     }
     
+    console.log("3");
+
     const post = new Post({
         title,
         description,
@@ -55,6 +61,7 @@ const createPost = async (req, res) => {
     // console.log("post before save hook called: ", post);
     await post.save();
 
+    console.log("4");
     const checkingPost = await Post.findById(post._id);
 
     if(!checkingPost){

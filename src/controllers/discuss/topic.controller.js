@@ -16,8 +16,8 @@ const registerTopic = async (req, res) => {
 
     // const user_id = req.uid;
 
-    const username = req.username;
-    console.log("username: ", username);
+    const ud = req.username;
+    console.log("username: ", ud);
 
     const hashedTopic = generateHash(post);
     const isCopied = await Topic.findOne({hash:hashedTopic})
@@ -28,8 +28,8 @@ const registerTopic = async (req, res) => {
         })
     }
    
-    const user = await User.findOne({username});
-    console.log("user: ",user._id);
+    const user = await User.findOne({username:ud.username});
+    // console.log("user: ",user._id);
 
     const uuid = uuidv4();
 

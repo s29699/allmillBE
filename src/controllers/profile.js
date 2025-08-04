@@ -35,10 +35,16 @@ const getUserPost = async (req, res) => {
     })
 }
 
-const getUserTweet = async () => {
+const getUserTweet = async (req,res) => {
     const {username} = req.params;
+    const user = await User.findOne({username});
+    const tweet = await Topic.find({writer:user._id})
+    console.log("all tweets by user ${username}", tweet);
 
-    const tweet = await Topic.find({})
+    return res.status(201).send({
+        message:`all post by ${username}`,
+        tweet 
+    })
 }
 
-export {showProfile, getUserPost}
+export {showProfile, getUserPost, getUserTweet}

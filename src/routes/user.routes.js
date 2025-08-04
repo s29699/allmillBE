@@ -2,7 +2,7 @@ import { Router } from "express";
 // import { upload } from "../middlewares/multer.middleware.js";
 import { demo, demo2, loginUser, logoutUser, registerUser } from "../controllers/user.controller.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
-import { getUserPost, showProfile } from "../controllers/profile.js";
+import { getUserPost, getUserTweet, showProfile } from "../controllers/profile.js";
 
 const userRouter = Router();
 
@@ -23,6 +23,7 @@ userRouter.route("/logout").post(logoutUser);
 // routes related profile
 userRouter.route("/profile/:username").get(showProfile);
 userRouter.route("/profile/:username/posts").get(getUserPost);
+userRouter.route("/profile/:username/tweets").get(getUserTweet);
 
 userRouter.route("/demo").get(verifyToken,demo);
 userRouter.route("/d2").get(demo2);

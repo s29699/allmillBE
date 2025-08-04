@@ -22,7 +22,7 @@ const registerUser = async (req, res) => {
 
     if(isUserExisting){throw new ApiError(400, "Some/All credentials are already used")}
     
-    //since before saving the user we are hashing the password using pre hook. So need to do it here again.
+    //since before saving the user we are hashing the password using pre hook. So need to do it here again. 
     // const hashedPassword = await bcrypt.hash(password, 5);
 
     const user = await User.create({
@@ -47,17 +47,17 @@ const loginUser = async (req, res) => {
     const {username, password} = req.body;
     console.log("usernaem", username);
     console.log("password", password);
-    // if([username, password].some((ele) => !ele || ele.trim() === "")){
-    //     console.log("Enter without space!");
-    // }
+    if([username, password].some((ele) => !ele || ele.trim() === "")){
+        console.log("Enter without space!");
+    }
     console.log(typeof(username));
     const trimmedUsername = username.trim();
-const trimmedPassword = password.trim();
+    const trimmedPassword = password.trim();
     
     console.log(typeof(trimmedUsername));
 
-    const users = await User.find({username:trimmedUsername}) ;
-    const user = users[0];
+    const user = await User.findOne({username:trimmedUsername}) ;
+    // const user = users[0];
     if(!user){ throw new ApiError(400, "User is not signed up")}
     console.log("password from DB", user.password);
     
@@ -73,9 +73,18 @@ const trimmedPassword = password.trim();
     if(!isMatch){
         throw new ApiError(400, "Wrong password")
     }
+    const payload = {
 
-    const token = jwt.sign(username, process.env.ACCESS_TOKEN_SECRET)
-
+    }
+    //yaha pe expireIn bhi add kar dena kyuki token stateless hota hai aur uske expire nahi kar sakte toh attacker can login any time if token is not expired.
+    const token = jwt.sign({username}, process.env.ACCESS_TOKEN_SECRET)
+    const details = {
+        token,
+        username:user.username,
+        name:user.fullName,
+        // member:isMember,
+        // admin:isAdmin
+    }
     if(!token){
         return res.status(500).json(
             new ApiResponse(500,"error in token creation")
@@ -83,7 +92,7 @@ const trimmedPassword = password.trim();
     }
 
     return res.status(201).json(
-        new ApiResponse(200, token, "user logged in")
+        new ApiResponse(200, details, "user logged in")
     )
 }
 
