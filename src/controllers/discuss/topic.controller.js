@@ -59,24 +59,26 @@ const registerReply = async (req, res) => {
     // const uid = alias[alias.length - 1];
     console.log("enter register reply");
     
-    const {uid} = req.params;
-    // console.log("uid: ", uid);
+    const { uid} = req.params;
+    console.log("uid: ", uid);
     const parent = await Topic.findOne({uuid:uid}); 
-    
+    console.log("parent", parent);
     const {post} = req.body;
-
-    const username = req.username;
+    console.log("post", post);
+    const usr = req.username;
+    console.log("username", usr);
 
     const hashedTopic = generateHash(post);
     const isCopied = await Topic.findOne({hash:hashedTopic})
 
+    console.log("isCopied", isCopied);
     if(isCopied){
         return res.status(403).send({
             message:"there exists a same post"
         })
     }
 
-    const user = await User.findOne({username});
+    const user = await User.findOne({username:usr.username});
     console.log("user: ",user._id);
 
     const uuid = uuidv4();
@@ -102,7 +104,7 @@ const registerReply = async (req, res) => {
     })
 }
 
-const allPost = async (req,res) => {
+const allPost = async (req, res) => {
     console.log("aaya");
     const posts = await Topic.find({}).populate('writer')
     // console.log("posts: ",posts);
@@ -112,7 +114,61 @@ const allPost = async (req,res) => {
     })
 }
 
+//Display one post
+const onePost = async (req, res) => {
+    const {uuid} = req.params;
+    console.log("uuid of onePost to display", uuid);
 
+    if(!uuid){
+        return res.status(301).send({
+            message:"Empty uuid recieved. Failed..."
+        })
+    }
+    const topic = await Topic.findOne({uuid});
+
+    if(!topic){
+        return res.status(402).send({
+            message:"Error: Unale to fetch the tweet from DB."
+        })
+    }
+
+    return res.status(201).send({
+        message:"The tweet is fetched",
+        topic
+    })
+}
+
+const fetchReplies = async (req, res) => {
+    const {uuid} = req.params;
+    console.log("uuid of tweet whse reply is fetched", uuid);
+    if(!uuid){
+        return res.status(401).send({
+            message:"uuid of topic/tweet is empty"
+        })
+    }
+    
+    const tweet = await Topic.findOne({uuid});
+    if(!tweet){
+        return res.status(402).send({
+            message:"Error fetching tweet whose replies are required"
+        })
+    }
+
+    // console.log("tweet", tweet);
+    // console.log("tweet._id", tweet._id);
+
+    const replies = await Topic.find({repliesTo:tweet._id})
+    if(!replies){
+        return res.status(402).send({
+            message:"Error fetching the replies"
+        })
+    }
+
+    return res.status(201).send({
+        message:"The replies for this tweet",
+        replies
+    })
+}
 
 const demodis = (req, res) => (res.send("It worked"));
-export {registerTopic, demodis, registerReply, allPost}
+export {registerTopic, demodis, registerReply, allPost, onePost, fetchReplies}
