@@ -63,7 +63,8 @@ const registerReply = async (req, res) => {
     console.log("uid: ", uid);
     const parent = await Topic.findOne({uuid:uid}); 
     console.log("parent", parent);
-    const {post} = req.body;
+    const {replyVal} = req.body;
+    const post = replyVal;
     console.log("post", post);
     const usr = req.username;
     console.log("username", usr);
@@ -157,7 +158,7 @@ const fetchReplies = async (req, res) => {
     // console.log("tweet", tweet);
     // console.log("tweet._id", tweet._id);
 
-    const replies = await Topic.find({repliesTo:tweet._id})
+    const replies = await Topic.find({repliesTo:tweet._id}).populate('writer')
     if(!replies){
         return res.status(402).send({
             message:"Error fetching the replies"
